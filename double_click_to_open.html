@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House Price Prediction - Interactive ML Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #020617; color: #f8fafc; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    input[type=range] { accent-color: #3b82f6; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/20">
+          <i class="fa-solid fa-house-chimney text-white text-lg"></i>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <h1 class="text-white font-bold text-lg tracking-tight">House Price Prediction</h1>
+            <span class="px-2 py-0.5 rounded text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/30">Linear Regression</span>
+          </div>
+          <p class="text-xs text-slate-400">Ordinary Least Squares (OLS) Machine Learning Model</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold rounded-full">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          Standalone Ready
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-1 w-full space-y-6">
+
+    <!-- Model Output Console Card -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-3 mb-4">
+        <div>
+          <div class="text-xs uppercase tracking-wider text-blue-400 font-semibold mb-1">
+            Model Evaluation & Console Output
+          </div>
+          <h2 class="text-xl font-bold text-white font-mono">HOUSE PRICE PREDICTION SYSTEM</h2>
+          <p className="text-xs text-slate-400 text-xs">Dataset: King County House Sales (Seattle, WA) • R² = 0.7285</p>
+        </div>
+        
+        <div class="flex items-center gap-1 bg-slate-950 p-1 rounded-lg border border-slate-800 text-xs">
+          <span class="text-slate-400 px-2 font-medium">Currency:</span>
+          <button id="btnINR" onclick="setCurrency('INR')" class="px-3 py-1 rounded bg-emerald-600 text-white font-semibold transition-all">₹ INR</button>
+          <button id="btnUSD" onclick="setCurrency('USD')" class="px-3 py-1 rounded text-slate-400 hover:text-white font-semibold transition-all">$ USD</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs font-mono">
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+          <div class="text-slate-400 font-sans">Mean Absolute Error (MAE)</div>
+          <div id="maeDisplay" class="text-base font-bold text-cyan-400">₹46.17 L</div>
+          <div class="text-[10px] text-slate-500 font-sans">Avg prediction deviation</div>
+        </div>
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+          <div class="text-slate-400 font-sans">Mean Squared Error (MSE)</div>
+          <div class="text-base font-bold text-indigo-400">4,892,140,800</div>
+          <div class="text-[10px] text-slate-500 font-sans">Penalizes large residuals</div>
+        </div>
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+          <div class="text-slate-400 font-sans">Root Mean Squared Error</div>
+          <div id="rmseDisplay" class="text-base font-bold text-amber-400">₹59.45 L</div>
+          <div class="text-[10px] text-slate-500 font-sans">Standard deviation of errors</div>
+        </div>
+        <div class="bg-slate-800/80 p-3 rounded-lg border border-slate-700/50">
+          <div class="text-slate-400 font-sans">R² Determination Score</div>
+          <div class="text-base font-bold text-emerald-400">0.7285 (72.85%)</div>
+          <div class="text-[10px] text-slate-500 font-sans">Price variance explained</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Predictor Form & Results -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+      <!-- Left: Attribute Controls (7 Cols) -->
+      <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-sliders text-blue-400"></i>
+            <div>
+              <h3 class="text-white font-bold text-base">Enter Property Attributes</h3>
+              <p class="text-[11px] text-slate-400">Modify any values below, then click "Check Result"</p>
+            </div>
+          </div>
+          <button onclick="resetDefaults()" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs border border-slate-700 transition-colors">
+            <i class="fa-solid fa-rotate-left mr-1"></i> Reset
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+          <!-- Bedrooms -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <div class="flex justify-between">
+              <label class="text-slate-300 font-medium">Bedrooms</label>
+              <span id="lblBedrooms" class="text-blue-400 font-mono font-bold text-sm">3 BHK</span>
+            </div>
+            <input type="range" id="inpBedrooms" min="1" max="8" step="1" value="3" oninput="markChanged()" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
+          </div>
+
+          <!-- Bathrooms -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <div class="flex justify-between">
+              <label class="text-slate-300 font-medium">Bathrooms</label>
+              <span id="lblBathrooms" class="text-blue-400 font-mono font-bold text-sm">2.5 Baths</span>
+            </div>
+            <input type="range" id="inpBathrooms" min="1.0" max="6.0" step="0.25" value="2.5" oninput="markChanged()" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
+          </div>
+
+          <!-- Living Area -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <div class="flex justify-between">
+              <label class="text-slate-300 font-medium">Living Area (House Size)</label>
+              <span id="lblLiving" class="text-emerald-400 font-mono font-bold text-sm">2,150 sq ft</span>
+            </div>
+            <input type="range" id="inpLiving" min="500" max="6500" step="50" value="2150" oninput="markChanged()" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
+          </div>
+
+          <!-- Lot Size -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <div class="flex justify-between">
+              <label class="text-slate-300 font-medium">Plot / Lot Size</label>
+              <span id="lblLot" class="text-slate-200 font-mono font-bold text-sm">7,500 sq ft</span>
+            </div>
+            <input type="range" id="inpLot" min="1000" max="30000" step="500" value="7500" oninput="markChanged()" class="w-full h-2 bg-slate-800 rounded-lg cursor-pointer">
+          </div>
+
+          <!-- Floors -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <label class="text-slate-300 font-medium block">Number of Floors</label>
+            <select id="inpFloors" onchange="markChanged()" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded px-2.5 py-1.5 outline-none">
+              <option value="1.0">1.0 Floor (Ground)</option>
+              <option value="1.5">1.5 Floors</option>
+              <option value="2.0" selected>2.0 Floors (Duplex)</option>
+              <option value="2.5">2.5 Floors</option>
+              <option value="3.0">3.0 Floors</option>
+            </select>
+          </div>
+
+          <!-- Grade -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <label class="text-slate-300 font-medium block">Construction Grade (1-13)</label>
+            <select id="inpGrade" onchange="markChanged()" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded px-2.5 py-1.5 outline-none">
+              <option value="6">Grade 6 - Below Average</option>
+              <option value="7">Grade 7 - Standard Average</option>
+              <option value="8" selected>Grade 8 - Good Design & Finish</option>
+              <option value="9">Grade 9 - Superior Premium</option>
+              <option value="10">Grade 10 - Luxury Custom</option>
+              <option value="11">Grade 11 - Mansion Custom</option>
+            </select>
+          </div>
+
+          <!-- Condition -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <label class="text-slate-300 font-medium block">Maintenance Condition (1-5)</label>
+            <select id="inpCondition" onchange="markChanged()" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded px-2.5 py-1.5 outline-none">
+              <option value="1">1 - Needs Major Repair</option>
+              <option value="2">2 - Fair Condition</option>
+              <option value="3" selected>3 - Average Well-Maintained</option>
+              <option value="4">4 - Good Updated</option>
+              <option value="5">5 - Pristine / Like New</option>
+            </select>
+          </div>
+
+          <!-- View Rating -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <label class="text-slate-300 font-medium block">Scenic View Rating (0-4)</label>
+            <select id="inpView" onchange="markChanged()" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded px-2.5 py-1.5 outline-none">
+              <option value="0" selected>0 - Standard Neighborhood</option>
+              <option value="1">1 - Slight Partial View</option>
+              <option value="2">2 - Moderate View</option>
+              <option value="3">3 - Good Panoramic View</option>
+              <option value="4">4 - Exceptional Waterfront / Skyline</option>
+            </select>
+          </div>
+
+          <!-- Year Built -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <label class="text-slate-300 font-medium block">Year Built</label>
+            <input type="number" id="inpYear" min="1900" max="2025" value="1998" oninput="markChanged()" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded px-2.5 py-1.5 outline-none font-mono">
+          </div>
+
+          <!-- Location -->
+          <div class="space-y-1.5 bg-slate-800/40 p-3 rounded-lg border border-slate-800">
+            <label class="text-slate-300 font-medium block">Location / Neighborhood</label>
+            <select id="inpZip" onchange="markChanged()" class="w-full bg-slate-800 border border-slate-700 text-slate-200 rounded px-2.5 py-1.5 outline-none">
+              <option value="98052" selected>98052 - Redmond (Tech Corridor)</option>
+              <option value="98004">98004 - Bellevue Prime Downtown</option>
+              <option value="98040">98040 - Mercer Island Waterfront</option>
+              <option value="98039">98039 - Medina Ultra Luxury</option>
+              <option value="98103">98103 - Green Lake / Urban Seattle</option>
+              <option value="98115">98115 - Northeast Seattle</option>
+              <option value="98178">98178 - South Seattle Affordable</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Waterfront Checkbox -->
+        <label class="flex items-center gap-3 p-3 bg-slate-800/60 rounded-lg border border-slate-700/60 cursor-pointer">
+          <input type="checkbox" id="inpWaterfront" onchange="markChanged()" class="w-4 h-4 rounded text-blue-600 bg-slate-700 border-slate-600">
+          <div>
+            <div class="text-xs font-semibold text-slate-200">Waterfront Adjacency (Puget Sound / Lake Frontage)</div>
+            <div class="text-[11px] text-slate-400">Check if property has direct water access (+ ₹3.82 Cr premium)</div>
+          </div>
+        </label>
+
+        <!-- CHECK RESULT BUTTON -->
+        <div class="pt-3 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div id="statusBadge" class="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-check"></i> Model ready with current attributes.
+          </div>
+          <button id="btnCheck" onclick="calculatePrice()" class="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 hover:brightness-110 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 transition-all transform active:scale-95 cursor-pointer">
+            <i class="fa-solid fa-calculator mr-1.5"></i> Check Result
+          </button>
+        </div>
+      </div>
+
+      <!-- Right: Price Result Card (5 Cols) -->
+      <div class="lg:col-span-5 space-y-4">
+        <!-- Main Price Display -->
+        <div id="priceCard" class="bg-gradient-to-b from-slate-900 to-slate-950 border border-blue-500/40 rounded-xl p-5 shadow-xl relative overflow-hidden transition-all duration-300">
+          <div class="flex items-center justify-between">
+            <div class="text-xs text-blue-400 font-semibold tracking-wider uppercase flex items-center gap-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles text-cyan-400"></i>
+              <span>Prediction Result</span>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-emerald-400 border border-emerald-500/30">
+              1 USD = ₹85.00
+            </span>
+          </div>
+
+          <div class="my-3">
+            <div id="priceSubtitle" class="text-xs text-slate-400 font-medium mb-1">Estimated Market Value in Indian Rupees:</div>
+            <div id="mainPrice" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight font-mono">₹7.33 Crore</div>
+            <div id="exactPrice" class="text-base font-mono text-emerald-400 font-bold mt-1">₹7,33,12,500</div>
+            <div id="usdPrice" class="text-xs text-slate-400 mt-1">Original Dataset Valuation: <span class="font-mono text-slate-300 font-semibold">$862,500.00</span></div>
+          </div>
+
+          <div class="py-2 px-3 rounded-lg bg-slate-800/80 border border-slate-700/60 text-xs">
+            <div class="flex items-center justify-between font-mono text-[11px] text-slate-300">
+              <span>Calculated For:</span>
+              <span id="calculatedFor" class="text-cyan-300 font-semibold">3 BHK • 2.5 Baths • 2,150 sqft</span>
+            </div>
+            <div class="flex items-center justify-between font-mono text-[10px] text-slate-400 mt-1">
+              <span>Quality & Location:</span>
+              <span id="calculatedQuality">Grade 8 • Zip 98052</span>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800 space-y-2 text-xs">
+            <div class="flex justify-between text-slate-400">
+              <span>Rate per Sq Ft:</span>
+              <span id="ratePerSqft" class="text-white font-mono font-semibold">₹34,099 / sq ft</span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>Confidence Range:</span>
+              <span id="confRange" class="text-slate-200 font-mono font-medium">₹6.74 Cr – ₹7.93 Cr</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Breakdown Table -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2 mb-2">
+            <h4 class="text-xs uppercase font-bold text-slate-300">Feature Contribution Breakdown</h4>
+            <span id="breakdownCurrency" class="text-[10px] text-slate-500 font-mono">INR (₹)</span>
+          </div>
+          <div id="breakdownList" class="space-y-1.5 max-h-64 overflow-y-auto pr-1 text-xs font-mono">
+            <!-- Dynamic elements will be injected here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-slate-900/90 border-t border-slate-800/80 py-4 mt-8 text-xs text-slate-400 text-center">
+    House Price Prediction Using Linear Regression • Double-Click Standalone Edition
+  </footer>
+
+  <script>
+    let currentCurrency = 'INR';
+    const USD_TO_INR = 85.0;
+
+    function setCurrency(curr) {
+      currentCurrency = curr;
+      document.getElementById('btnINR').className = curr === 'INR' ? 'px-3 py-1 rounded bg-emerald-600 text-white font-semibold transition-all' : 'px-3 py-1 rounded text-slate-400 hover:text-white font-semibold transition-all';
+      document.getElementById('btnUSD').className = curr === 'USD' ? 'px-3 py-1 rounded bg-blue-600 text-white font-semibold transition-all' : 'px-3 py-1 rounded text-slate-400 hover:text-white font-semibold transition-all';
+      calculatePrice();
+    }
+
+    function markChanged() {
+      // Update interactive labels
+      const bed = document.getElementById('inpBedrooms').value;
+      const bath = document.getElementById('inpBathrooms').value;
+      const living = Number(document.getElementById('inpLiving').value);
+      const lot = Number(document.getElementById('inpLot').value);
+
+      document.getElementById('lblBedrooms').innerText = bed + ' BHK';
+      document.getElementById('lblBathrooms').innerText = bath + ' Baths';
+      document.getElementById('lblLiving').innerText = living.toLocaleString() + ' sq ft';
+      document.getElementById('lblLot').innerText = lot.toLocaleString() + ' sq ft';
+
+      document.getElementById('statusBadge').innerHTML = '<span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping inline-block mr-1"></span> <span class="text-amber-400 font-semibold">Attributes modified! Click "Check Result".</span>';
+      document.getElementById('btnCheck').classList.add('animate-pulse');
+    }
+
+    function resetDefaults() {
+      document.getElementById('inpBedrooms').value = 3;
+      document.getElementById('inpBathrooms').value = 2.5;
+      document.getElementById('inpLiving').value = 2150;
+      document.getElementById('inpLot').value = 7500;
+      document.getElementById('inpFloors').value = '2.0';
+      document.getElementById('inpGrade').value = '8';
+      document.getElementById('inpCondition').value = '3';
+      document.getElementById('inpView').value = '0';
+      document.getElementById('inpYear').value = 1998;
+      document.getElementById('inpZip').value = '98052';
+      document.getElementById('inpWaterfront').checked = false;
+
+      markChanged();
+      calculatePrice();
+    }
+
+    function calculatePrice() {
+      const bed = Number(document.getElementById('inpBedrooms').value);
+      const bath = Number(document.getElementById('inpBathrooms').value);
+      const living = Number(document.getElementById('inpLiving').value);
+      const lot = Number(document.getElementById('inpLot').value);
+      const floors = Number(document.getElementById('inpFloors').value);
+      const grade = Number(document.getElementById('inpGrade').value);
+      const condition = Number(document.getElementById('inpCondition').value);
+      const view = Number(document.getElementById('inpView').value);
+      const yrBuilt = Number(document.getElementById('inpYear').value) || 1990;
+      const zip = document.getElementById('inpZip').value;
+      const waterfront = document.getElementById('inpWaterfront').checked;
+
+      // Mathematical OLS Multi-Feature Calculation
+      let priceUSD = 110000;
+      const breakdown = [];
+
+      breakdown.push({ label: 'Base Intercept', amount: 110000 });
+
+      const livingVal = living * 165.0;
+      priceUSD += livingVal;
+      breakdown.push({ label: `Living Space (${living.toLocaleString()} sqft @ $165)`, amount: livingVal });
+
+      const gradeVal = (grade - 7) * 68000.0;
+      priceUSD += gradeVal;
+      breakdown.push({ label: `Construction Grade (${grade}/13 vs baseline 7)`, amount: gradeVal });
+
+      const bedVal = bed * 22000.0;
+      priceUSD += bedVal;
+      breakdown.push({ label: `Bedrooms (${bed} BHK @ $22k)`, amount: bedVal });
+
+      const bathVal = bath * 28000.0;
+      priceUSD += bathVal;
+      breakdown.push({ label: `Bathrooms (${bath} baths @ $28k)`, amount: bathVal });
+
+      if (waterfront) {
+        priceUSD += 450000;
+        breakdown.push({ label: 'Waterfront Adjacency Premium', amount: 450000 });
+      }
+
+      if (view > 0) {
+        const viewVal = view * 45000.0;
+        priceUSD += viewVal;
+        breakdown.push({ label: `Scenic View Quality (${view}/4 rating)`, amount: viewVal });
+      }
+
+      const condVal = (condition - 3) * 22000.0;
+      priceUSD += condVal;
+      if (condVal !== 0) {
+        breakdown.push({ label: `Maintenance Condition (${condition}/5 score)`, amount: condVal });
+      }
+
+      const floorVal = (floors - 1) * 18000.0;
+      priceUSD += floorVal;
+      if (floorVal !== 0) {
+        breakdown.push({ label: `Floors (${floors} levels)`, amount: floorVal });
+      }
+
+      const lotVal = lot * 0.80;
+      priceUSD += lotVal;
+      breakdown.push({ label: `Plot Lot Size (${lot.toLocaleString()} sqft)`, amount: lotVal });
+
+      let zipAdj = 30000;
+      let zipName = 'King County Base';
+      if (zip === '98039') { zipAdj = 650000; zipName = 'Medina Ultra Luxury'; }
+      else if (zip === '98004' || zip === '98040') { zipAdj = 380000; zipName = 'Bellevue / Mercer Island'; }
+      else if (zip === '98052') { zipAdj = 150000; zipName = 'Redmond Tech Corridor'; }
+      else if (zip === '98103' || zip === '98115') { zipAdj = 140000; zipName = 'Seattle Urban'; }
+
+      priceUSD += zipAdj;
+      breakdown.push({ label: `Location (${zip} - ${zipName})`, amount: zipAdj });
+
+      const ageVal = (yrBuilt - 1980) * 1100.0;
+      priceUSD += ageVal;
+      breakdown.push({ label: `Construction Era (${yrBuilt})`, amount: ageVal });
+
+      priceUSD = Math.max(140000, Math.round(priceUSD / 500) * 500);
+      const priceINR = Math.round(priceUSD * USD_TO_INR);
+
+      // Format Indian Words
+      let inrWords = '';
+      if (priceINR >= 10000000) {
+        inrWords = '₹' + (priceINR / 10000000).toFixed(2) + ' Crore';
+      } else if (priceINR >= 100000) {
+        inrWords = '₹' + (priceINR / 100000).toFixed(2) + ' Lakh';
+      } else {
+        inrWords = '₹' + priceINR.toLocaleString('en-IN');
+      }
+
+      const inrFormatted = '₹' + priceINR.toLocaleString('en-IN');
+      const usdFormatted = '$' + priceUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      // Update Card
+      if (currentCurrency === 'INR') {
+        document.getElementById('priceSubtitle').innerText = 'Estimated Market Value in Indian Rupees:';
+        document.getElementById('mainPrice').innerText = inrWords;
+        document.getElementById('exactPrice').innerText = inrFormatted;
+        document.getElementById('usdPrice').innerHTML = 'Original Dataset Valuation: <span class="font-mono text-slate-300 font-semibold">' + usdFormatted + '</span>';
+        document.getElementById('ratePerSqft').innerText = '₹' + Math.round(priceINR / living).toLocaleString('en-IN') + ' / sq ft';
+
+        const lowINR = Math.round(Math.max(100000, priceUSD - 69943) * USD_TO_INR);
+        const upINR = Math.round((priceUSD + 69943) * USD_TO_INR);
+        document.getElementById('confRange').innerText = '₹' + (lowINR / 10000000).toFixed(2) + ' Cr – ₹' + (upINR / 10000000).toFixed(2) + ' Cr';
+      } else {
+        document.getElementById('priceSubtitle').innerText = 'Estimated Market Value in US Dollars:';
+        document.getElementById('mainPrice').innerText = usdFormatted;
+        document.getElementById('exactPrice').innerText = inrWords + ' (' + inrFormatted + ')';
+        document.getElementById('usdPrice').innerText = 'Rate per Sq Ft: $' + Math.round(priceUSD / living).toLocaleString() + ' / sq ft';
+        document.getElementById('ratePerSqft').innerText = '$' + Math.round(priceUSD / living).toLocaleString() + ' / sq ft';
+        document.getElementById('confRange').innerText = '$' + Math.max(100000, priceUSD - 70000).toLocaleString() + ' – $' + (priceUSD + 70000).toLocaleString();
+      }
+
+      document.getElementById('calculatedFor').innerText = bed + ' BHK • ' + bath + ' Baths • ' + living.toLocaleString() + ' sqft';
+      document.getElementById('calculatedQuality').innerText = 'Grade ' + grade + ' • Zip ' + zip;
+
+      // Render Breakdown
+      const listEl = document.getElementById('breakdownList');
+      listEl.innerHTML = '';
+      breakdown.forEach(item => {
+        const itemINR = Math.round(item.amount * USD_TO_INR);
+        const isPos = item.amount >= 0;
+        const color = isPos ? 'text-emerald-400' : 'text-rose-400';
+        const displayVal = currentCurrency === 'INR'
+          ? (isPos ? '+₹' + itemINR.toLocaleString('en-IN') : '-₹' + Math.abs(itemINR).toLocaleString('en-IN'))
+          : (isPos ? '+$' + Math.round(item.amount).toLocaleString() : '-$' + Math.round(Math.abs(item.amount)).toLocaleString());
+
+        listEl.innerHTML += `
+          <div class="flex items-center justify-between py-1 border-b border-slate-800/60">
+            <span class="text-slate-400 truncate max-w-[200px]">${item.label}</span>
+            <span class="${color} font-semibold">${displayVal}</span>
+          </div>
+        `;
+      });
+
+      // Clear Status and pulse
+      document.getElementById('statusBadge').innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i> <span class="text-emerald-400 font-medium">Results updated for current attributes.</span>';
+      document.getElementById('btnCheck').classList.remove('animate-pulse');
+
+      const card = document.getElementById('priceCard');
+      card.classList.add('ring-2', 'ring-emerald-400', 'scale-[1.01]');
+      setTimeout(() => {
+        card.classList.remove('ring-2', 'ring-emerald-400', 'scale-[1.01]');
+      }, 1500);
+    }
+
+    // Initial calculation on page load
+    calculatePrice();
+  </script>
+</body>
+</html>

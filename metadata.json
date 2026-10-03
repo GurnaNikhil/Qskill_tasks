@@ -1,0 +1,6 @@
+{
+  "name": "House Price Prediction - Python ML Project",
+  "description": "Complete beginner-friendly Python Machine Learning project using Linear Regression on Kaggle House Sales dataset.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
