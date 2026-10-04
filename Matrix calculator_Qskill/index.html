@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Matrix Operations Tool Using NumPy - QSkill Python Internship</title>
+    <meta name="description" content="Python and NumPy Matrix Operations Tool for QSkill Python Development Internship featuring addition, subtraction, multiplication, transpose, and determinant calculation with robust input validation." />
+    <meta property="og:title" content="Matrix Operations Tool Using NumPy - QSkill Python Internship" />
+    <meta property="og:description" content="Python and NumPy Matrix Operations Tool for QSkill Python Development Internship featuring addition, subtraction, multiplication, transpose, and determinant calculation with robust input validation." />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+  </head>
+  <body>
+    <div id="root">
+      <!-- Fallback displayed if opened in VS Code Live Server without Vite dev server -->
+      <noscript>
+        <div style="font-family: sans-serif; max-width: 600px; margin: 40px auto; padding: 24px; background: #1e293b; color: #f8fafc; border-radius: 12px;">
+          <h2>Matrix Operations Tool (Python + NumPy)</h2>
+          <p>This is a Python internship project. Run in VS Code terminal: <code>python matrix_operations.py</code></p>
+        </div>
+      </noscript>
+    </div>
+
+    <!-- Live Server detection fallback script -->
+    <script>
+      setTimeout(function() {
+        var root = document.getElementById('root');
+        // If root is still empty after 1.5s (meaning .tsx module was not transpiled by Vite)
+        if (root && root.children.length === 0) {
+          root.innerHTML = `
+            <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 680px; margin: 40px auto; padding: 28px; background: #0f172a; color: #f8fafc; border-radius: 16px; border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);">
+              <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <div style="background: #2563eb; color: white; width: 40px; height: 40px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 18px;">[M]</div>
+                <div>
+                  <h2 style="margin: 0; font-size: 18px; font-weight: 700;">Matrix Operations Tool (QSkill Python Internship)</h2>
+                  <span style="font-size: 12px; color: #94a3b8;">Opened using VS Code "Go Live" / Live Server</span>
+                </div>
+              </div>
+
+              <div style="background: #451a03; border: 1px solid #92400e; padding: 14px 16px; border-radius: 8px; margin-bottom: 20px;">
+                <p style="margin: 0; font-size: 13px; color: #fde68a; line-height: 1.5;">
+                  ⚠️ <strong>Why this screen appears:</strong> VS Code's "Go Live" serves static files and does not execute Python. Python programs run directly inside the <strong>VS Code Terminal</strong>.
+                </p>
+              </div>
+
+              <h3 style="font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 8px;">🚀 Option 1: Run the Python Project (Required for Internship)</h3>
+              <div style="background: #020617; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 13px; border: 1px solid #1e293b; margin-bottom: 16px;">
+                <div style="color: #64748b; margin-bottom: 6px;"># 1. Open Terminal in VS Code (Ctrl + ~)</div>
+                <div style="color: #38bdf8; margin-bottom: 6px;">cd matrix_operations_tool</div>
+                <div style="color: #34d399; font-weight: bold;">python matrix_operations.py</div>
+              </div>
+
+              <h3 style="font-size: 14px; font-weight: 600; color: #e2e8f0; margin-bottom: 8px;">🌐 Option 2: Open Standalone Browser Dashboard</h3>
+              <p style="font-size: 13px; color: #94a3b8; margin-top: 0; margin-bottom: 12px;">
+                We have provided a zero-install HTML version that works 100% with "Go Live" or double-clicking:
+              </p>
+              <a href="matrix_operations_tool/standalone_app.html" style="display: inline-block; background: #2563eb; color: white; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 600;">
+                👉 Open standalone_app.html in Browser
+              </a>
+
+              <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid #1e293b; font-size: 12px; color: #64748b;">
+                Tip: You can also double-click <strong>matrix_operations_tool/run_in_vscode.bat</strong> on Windows to run Python automatically.
+              </div>
+            </div>
+          `;
+        }
+      }, 1500);
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+

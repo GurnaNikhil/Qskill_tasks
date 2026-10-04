@@ -1,0 +1,6 @@
+{
+  "name": "Matrix Operations Tool Using NumPy",
+  "description": "Python and NumPy Matrix Operations Tool for QSkill Python Development Internship featuring addition, subtraction, multiplication, transpose, and determinant calculation with robust input validation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
