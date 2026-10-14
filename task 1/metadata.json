@@ -1,0 +1,6 @@
+{
+  "name": "Student Performance Data Analysis & Visualization Studio",
+  "description": "A comprehensive Python data analysis and visualization project suite for QSkill Python Developer Internship using Pandas and Matplotlib.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
